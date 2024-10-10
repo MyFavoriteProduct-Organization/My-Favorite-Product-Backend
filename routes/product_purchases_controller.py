@@ -12,13 +12,13 @@ product_purchase_controller = APIRouter(
 def get_all(db: Session = Depends(get_db)):
     return db.query(ProductPurchase).all()
 
-@product_purchase_controller.get("/{product_id}", response_model=None)
+@product_purchase_controller.get("/get-by-product-id/{product_id}", response_model=None)
 def get_by_product_id(product_id: int, db: Session = Depends(get_db)):
     product = db.query(ProductPurchase).filter(ProductPurchase.product_id == product_id).all()
     return product
 
 
-@product_purchase_controller.get("/{purchase_id}", response_model=None)
+@product_purchase_controller.get("/get-by-purchase-id/{purchase_id}", response_model=None)
 def get_by_purchase_id(purchase_id: int, db: Session = Depends(get_db)):
     product = db.query(ProductPurchase).filter(ProductPurchase.purchase_id == purchase_id).all()
     return product

@@ -21,13 +21,43 @@ def get_product(id: int, db: Session = Depends(get_db)):
         return HttpException(status_code=404, detail="Product not found")
     return product
 
+@product_controller.get("/search/{name}/{brand}", response_model=None)
+def get_product_by_name_and_brand(name: str, brand: str, db: Session = Depends(get_db)):
+    product = db.query(Product).filter(Product.name == name, Product.brand == brand).first()
+    if product is None:
+        return HttpException(status_code=404, detail="Product not found")
+    return product
+
+@product_controller.get("/search-by-name/{name}", response_model=None)
+def get_product_by_name(name: str, db: Session = Depends(get_db)):
+    product = db.query(Product).filter(Product.name == name).first()
+    if product is None:
+        return HttpException(status_code=404, detail="Product not found")
+    return product
+
+@product_controller.get("/search-by-brand/{brand}", response_model=None)
+def get_product_by_brand(brand: str, db: Session = Depends(get_db)):
+    product = db.query(Product).filter(Product.brand == brand).first()
+    if product is None:
+        return HttpException(status_code=404, detail="Product not found")
+    return product
+
+@product_controller.get("/get-by-category/{category}", response_model=None)
+def get_product_by_category(category: str, db: Session = Depends(get_db)):
+    product = db.query(Product).filter(Product.category == category).all()
+    if product is None:
+        return HttpException(status_code=404, detail="Product not found")
+    return product
+
 @product_controller.post("/", response_model=None)
-def create_product(name: str, price: float, brand:str, imgUrl:str,db: Session = Depends(get_db)):
-    new_product = Product(name=name,  price=price, brand=brand, imgUrl=imgUrl)
+def create_product(name: str, price: float, brand:str, category:str, imgUrl:str,db: Session = Depends(get_db)):
+    new_product = Product(name=name,  price=price, brand=brand, imgUrl=imgUrl, category=category)
     db.add(new_product)
     db.commit()
     db.refresh(new_product)
     return new_product
+
+
 
 @product_controller.put("/{id}", response_model=None)
 def update_product(id: int, name: str, price: float, brand:str, imgUrl:str, db: Session = Depends(get_db)):

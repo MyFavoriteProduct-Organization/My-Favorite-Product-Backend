@@ -9,6 +9,7 @@ class Product(Base):
     name = Column(String(255))
     brand = Column(String(255))
     price = Column(Float)
+    category = Column(String(255))
     imgUrl = Column(String(255))
     purchases = relationship("ProductPurchase", back_populates="product", cascade="all, delete")
     
