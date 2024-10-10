@@ -7,6 +7,8 @@ class Purchase(Base):
     id = Column(Integer, primary_key=True,autoincrement=True)
     amount = Column(Float)
     created_at = Column(TIMESTAMP, nullable=False, server_default=text('CURRENT_TIMESTAMP'))
+    
+    products = relationship("ProductPurchase", back_populates="purchase", cascade="all, delete")
 
 
 
