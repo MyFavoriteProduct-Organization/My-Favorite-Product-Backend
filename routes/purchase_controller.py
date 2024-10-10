@@ -13,14 +13,14 @@ purchase_controller = APIRouter(
 def get_purchases(db: Session = Depends(get_db)):
     purchases = db.query(Purchase).all()
     if purchases is None:
-        return HttpException(status_code=404, detail="No purchases found")
+       raise HttpException(status_code=404, detail="No purchases found")
     return purchases
 
 @purchase_controller.get("/{id}", response_model=None)
 def get_purchase(id: int, db: Session = Depends(get_db)):
     purchase = db.query(Purchase).filter(Purchase.id == id).first()
     if purchase is None:
-        return HttpException(status_code=404, detail="Purchase not found")
+        raise HttpException(status_code=404, detail="Purchase not found")
     return purchase
 
 @purchase_controller.post("/", response_model=None)
