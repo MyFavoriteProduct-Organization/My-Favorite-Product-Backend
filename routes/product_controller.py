@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from config.migration import get_db
+from config.migration import get_db, populate_products_from_csv
 from models.product import Product
 from fastapi.exceptions import HTTPException as HttpException
 
@@ -8,6 +8,15 @@ product_controller = APIRouter(
     prefix="/api/v1/products",
     tags=["Products"]
 )
+
+# hacer la peticion POST para poblar la tabla "Product" con datos de BigBasket.csv
+@product_controller.post("/populate", response_model=None)
+def populate_products(db: Session = Depends(get_db)):
+    try:
+        populate_products_from_csv(db)
+        return {"message": "Products populated successfully"}
+    except Exception as e:
+        raise HttpException(status_code=500, detail=str(e))
 
 @product_controller.get("/",response_model=None)
 def get_products(db: Session = Depends(get_db)):
